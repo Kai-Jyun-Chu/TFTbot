@@ -98,6 +98,7 @@ async def challenger(interaction: discord.Interaction):
         result_msg = await asyncio.to_thread(scrape_lp_diff)
         await interaction.followup.send(result_msg)
     except Exception as e:
-        await interaction.followup.send(f"[DEBUG] err{e}")
+        err = "".join(traceback.format_exception(type(e), e, e.__traceback__))
+        await interaction.followup.send(f"[Exception]\n```{err}```")
 
 client.run(TOKEN)
