@@ -1,0 +1,6 @@
+.env
+chromedriver.exe
+grab.py
+chromedriver-win64/
+chromedriver.exe
+*.exe
