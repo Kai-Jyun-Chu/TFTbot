@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 import asyncio
 from dotenv import load_dotenv
 import os
+import traceback
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -46,12 +47,18 @@ async def ping(interaction: discord.Interaction):
 def scrape_lp_diff():
     print("setting Chrome options")
     options = webdriver.ChromeOptions()
-    if os.path.exists("/usr/bin/chromium"):
-        options.binary_location = "/usr/bin/chromium"
-    elif os.path.exists("/usr/bin/chromium-browser"):
-        options.binary_location = "/usr/bin/chromium-browser"
+    possible_paths = ["/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome"]
+    for path in possible_paths:
+        if os.path.exists(path):
+            print(f"[DEBUG] Using chromium at: {path}")
+            options.binary_location = path
+            break
     else:
+        print("[ERROR] Chromium binary not found. Checked:")
+        os.system("ls /usr/bin | grep chrom")
         raise Exception("Chromium binary not found")
+
+        
     print(f"[DEBUG] Using chromium binary at: {options.binary_location}")
 
     options.add_argument("--headless")
