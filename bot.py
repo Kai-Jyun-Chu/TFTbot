@@ -68,8 +68,11 @@ def scrape_lp_diff():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
-    print("⬇downloading chromedriver ")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    print("Using system chromedriver ")
+    driver = webdriver.Chrome(
+        service=Service(chromedriver_path),
+        options=options
+    )
     print("crawling")
     try:
         # 
