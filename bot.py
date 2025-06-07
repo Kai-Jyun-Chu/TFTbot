@@ -46,8 +46,11 @@ async def ping(interaction: discord.Interaction):
 def scrape_lp_diff():
     print("setting Chrome options")
     options = webdriver.ChromeOptions()
+    options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     print("⬇downloading chromedriver ")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -78,7 +81,10 @@ def scrape_lp_diff():
         challenger_lp = int(text.replace("LP", "").strip())
 
         diff = challenger_lp - lp
-        return f"Challenger need {diff} LP"
+        if diff <= 0:
+            return f"Congrat! Chen ting yu is already a Challenger!\n Standing at {lp} rn, Challenger line: {challenger_lp} "
+        else:
+            return f"☠️Challenger need {diff} LP"
 
     finally:
         driver.quit()
@@ -92,6 +98,6 @@ async def challenger(interaction: discord.Interaction):
         result_msg = await asyncio.to_thread(scrape_lp_diff)
         await interaction.followup.send(result_msg)
     except Exception as e:
-        await interaction.followup.send(f"⚠️ 發生例外：{e}")
+        await interaction.followup.send(f"[DEBUG] err{e}")
 
 client.run(TOKEN)
