@@ -46,7 +46,14 @@ async def ping(interaction: discord.Interaction):
 def scrape_lp_diff():
     print("setting Chrome options")
     options = webdriver.ChromeOptions()
-    options.binary_location = "/usr/bin/chromium"
+    if os.path.exists("/usr/bin/chromium"):
+        options.binary_location = "/usr/bin/chromium"
+    elif os.path.exists("/usr/bin/chromium-browser"):
+        options.binary_location = "/usr/bin/chromium-browser"
+    else:
+        raise Exception("Chromium binary not found")
+    print(f"[DEBUG] Using chromium binary at: {options.binary_location}")
+
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
